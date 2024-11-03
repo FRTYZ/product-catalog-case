@@ -275,7 +275,6 @@ function Filter({
                         sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
                     />
                 )}
-                
                 <Drawer
                     anchor={'right'}
                     open={Boolean(mobileFilter)}
