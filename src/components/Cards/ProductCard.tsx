@@ -3,16 +3,13 @@ import React, { useEffect, useState } from 'react'
 // Material UI elements
 import { 
     Box, 
-    Grid, 
+    Grid2 as Grid, 
     Card, 
     CardActions, 
     CardContent, 
     CardMedia, 
     Typography, 
-    Chip, 
     IconButton,
-    CardHeader,
-    Avatar,
     Button,
     Rating,
     } from '@mui/material';
@@ -29,20 +26,20 @@ import { AddShoppingCart as AddShoppingCartIcon} from '@mui/icons-material';
 import { ProductsProps } from '../../pages/Home/Home';
 
 interface AdCardProps {
-    data: ProductsProps[];
+    data?: ProductsProps[];
     grid: number[];
 }
 
-const ProductCard: React.FC<AdCardProps> = ({ data, grid }) => {
+const ProductCard = ({ data, grid }: AdCardProps) => {
   
     // useState
-    const [cardData, setCardData] = useState<ProductsProps[]>(data);
+    const [cardData, setCardData] = useState<ProductsProps[]>(data!);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [endPagination, setEndPagination] = useState<boolean>(false);
     const pageSize: number = 10;
     
     useEffect(() => {
-        if(data.length > 0){
+        if(data && data.length > 0){
             setCardData(Array.isArray(data) ? data.slice(0, pageSize) : []);
         }
     },[data])
@@ -51,7 +48,7 @@ const ProductCard: React.FC<AdCardProps> = ({ data, grid }) => {
         const limitsData = () => {
             const startIndex = (pageNumber - 1) * pageSize;
             const endIndex = startIndex + pageSize;
-            const limitedData = data.slice(startIndex, endIndex);
+            const limitedData = data!.slice(startIndex, endIndex);
 
             if(limitedData.length > 0){
                 setCardData((prevData) => [ ...prevData, ...limitedData ]);
@@ -70,60 +67,64 @@ const ProductCard: React.FC<AdCardProps> = ({ data, grid }) => {
 
     return (
         <Grid container spacing={2}>
-            {cardData.map((item, index) => (
-                <Grid item={true} lg={grid[0]} md={grid[1]} sm={grid[2]} xs={grid[3]} key={index}>
-                        <Card sx={{
-                            maxWidth: '345px'
-                        }}>
-                            <CardMedia
-                                component="img"
-                                height="194"
-                                image={item.images[0]}
-                                alt={item.title}
-                            />
-                            <CardContent
+            {cardData && cardData.map((item, index) => (
+                <Grid size={{ lg: grid[0], md: grid[1], sm:grid[2], xs: grid[3]}} key={index}>
+                    <Card sx={{
+                        maxWidth: '345px'
+                    }}>
+                        <CardMedia
+                            component="img"
+                            height="194"
+                            image={item.images[0]}
+                            alt={item.title}
+                        />
+                        <CardContent
+                            sx={{
+                                paddingInline: '10px',
+                            }}
+                        >
+                            <Rating name="half-rating" defaultValue={item.rating} precision={item.rating} />
+                            <Typography
+                                variant="body2" 
                                 sx={{
-                                     paddingInline: '10px',
+                                    fontSize: '16px',
+                                    lineHeight: '24px',
+                                    fontWeight: 500,
+                                    color: '#3b3b3b',
+                                    paddingLeft: '4px',
+                                    marginTop: '10px'
                                 }}
-                            >
-                                <Rating name="half-rating" defaultValue={item.rating} precision={item.rating} />
-                                <Typography
-                                    variant="body2" 
-                                    sx={{
-                                        fontSize: '16px',
-                                        lineHeight: '24px',
-                                        fontWeight: 500,
-                                        color: '#3b3b3b',
-                                        paddingLeft: '4px',
-                                        marginTop: '10px'
-                                    }}
-                                > {item?.title}</Typography>
-                            </CardContent>
-                            <CardActions sx={{
+                            > {item?.title}</Typography>
+                        </CardContent>
+                        <CardActions 
+                            sx={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 paddingInline: '10px'
-                            }}>
-                                    <Typography sx={{
+                            }}
+                        >
+                                <Typography 
+                                    sx={{
                                         textAlign: 'right',
                                         fontSize: '20px',
                                         lineHeight: '26px',
                                         fontWeight: 500,
                                         color: '#3b3b3b'
-                                    }}>
-                                        {item.price} TL
-                                    </Typography>
-                                    <Box sx={{ textAlign: 'right', float: 'right' }}>
-                                        <IconButton color="primary" aria-label="add to shopping cart">
-                                            <AddShoppingCartIcon />
-                                        </IconButton>
-                                    </Box>
-                            </CardActions>
-                        </Card>
+                                    }}
+                                >
+                                    {item.price} TL
+                                </Typography>
+                                <Box sx={{ textAlign: 'right', float: 'right' }}>
+                                    <IconButton color="primary" aria-label="add to shopping cart">
+                                        <AddShoppingCartIcon />
+                                    </IconButton>
+                                </Box>
+                        </CardActions>
+                    </Card>
                 </Grid>
             ))}
-            {(!endPagination && data.length > 10 )&& (
-                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+            {!endPagination && (data && data.length > 10) && (
+                <Grid size={{ xs: 12, lg: 12 }}>
                     <Box sx={{
                          textAlign: 'center', 
                          marginTop: '30px'
