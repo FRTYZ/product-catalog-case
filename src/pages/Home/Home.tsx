@@ -35,6 +35,7 @@ function Home() {
 
   const [sortOption, setSortOption] = useState<string>('default');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [search, setSearch] = useState<string | null>('');
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
@@ -88,7 +89,9 @@ function Home() {
       const matchesCategory = selectedCategory ? selectedCategory === 'all' ? product : product.category === selectedCategory : true;
       const matchesMinPrice = minPrice !== null ? product.price >= minPrice : true;
       const matchesMaxPrice = maxPrice !== null ? product.price <= maxPrice : true;
-      return matchesCategory && matchesMinPrice && matchesMaxPrice;
+      const matchesSearch = search !== null ? product.title.toLowerCase().includes(search!.toLowerCase()): true
+
+      return matchesCategory && matchesMinPrice && matchesMaxPrice && matchesSearch;
     });
 
     // Sıralama işlemi
@@ -102,16 +105,17 @@ function Home() {
 
     return result;
 
-  }, [products, selectedCategory, minPrice, maxPrice, sortOption]);
+  }, [products, selectedCategory, minPrice, maxPrice, search, sortOption]);
 
   const formik = useFormik({
       initialValues: {
         minPrice: '',
         maxPrice: '',
-        selectCategory: 'all'
+        selectCategory: 'all',
+        search: ''
       },
       onSubmit: async (values) => {
-        const {minPrice, maxPrice, selectCategory} = values;
+        const {search, minPrice, maxPrice, selectCategory} = values;
 
         if(selectCategory){
           setSelectedCategory(selectCategory);
@@ -127,6 +131,12 @@ function Home() {
         }else{
           setMinPrice(null);
         }
+
+        if(search !== ''){
+          setSearch(search);
+        }else{
+          setSearch(null);
+        }
         
       }
   })
@@ -136,8 +146,8 @@ function Home() {
     setSelectedCategory('all')
     setMaxPrice(null)
     setMinPrice(null)
+    setSearch(null)
   }
-
 
   return (
     <Container>
@@ -164,6 +174,18 @@ function Home() {
                     marginInline: '30px'
                   }}
                 >
+                  <Box>
+                    <Typography>Arama</Typography>
+                    <XInput 
+                        type='text'
+                        label=""
+                        name="search"
+                        placeholder='Ürün ismi ile ara'
+                        value={formik.values.search}
+                        handleChange={formik.handleChange}
+                        size="small"
+                    />
+                </Box>
                   <Box>
                       <Typography>Kategoriler</Typography>
                       <XSelectBox 
