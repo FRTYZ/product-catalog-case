@@ -1,6 +1,11 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
+// React router
+import { Link } from 'react-router-dom';
 
+// Redux
+import { useAppSelector } from '../redux/store';
+
+// Material UI
+import { styled } from '@mui/material/styles';
 import {
   AppBar,
   Box,
@@ -14,8 +19,7 @@ import {
   ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material';
 
-import { Link } from 'react-router-dom';
-
+// Styled-components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   boxShadow: '1px',
   backgroundColor: '#ffffff',
@@ -23,7 +27,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 }));
 
 const StyledToolBar = styled(Toolbar)(({ theme }) => ({
-    display:'flex'
+  display:'flex'
 }));
 
 const StyledLogoBox = styled(Box)(({ theme }) => ({
@@ -43,6 +47,7 @@ const StyledLogoTypography = styled(Typography)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const {bagItems}  = useAppSelector((state) => state?.shopBagItems);
 
   return (
     <StyledAppBar position="static">
@@ -76,9 +81,16 @@ export default function Navbar() {
               color="default"
               sx={{ display: 'flex' }}
             >
-              <Badge badgeContent={17} color="error">
-                <ShoppingCartIcon />
-              </Badge>
+              <Link 
+                to='/cart' 
+                style={{
+                  color: 'black'
+                }}
+              >
+                <Badge badgeContent={bagItems.length} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </Link>
             </IconButton>
         </StyledToolBar>
       </StyledAppBar>
