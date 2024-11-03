@@ -122,19 +122,25 @@ function Home() {
       <Grid container>
           {/* Filtering side */}
           <Grid size={{ xs: 12, lg: 4 }}>
-              <Typography
-                sx={{
-                   marginInline: {xs: 0, lg: '30px'},
-                   mb: '10px',
-                   fontSize: '24px',
-                   fontWeight: 500
-                }}
-              >
-                Ürünlerimiz
-              </Typography>
+              {isLoading ? (
+                <Skeleton variant="rectangular" width={200} height={40} sx={{ marginInline: {xs: 0, lg: '30px'}}} />
+              ): (
+                <Typography
+                  sx={{
+                    marginInline: {xs: 0, lg: '30px'},
+                    mb: '10px',
+                    fontSize: '24px',
+                    fontWeight: 500
+                  }}
+                >
+                  Ürünlerimiz
+                </Typography>
+              )}
+             
               <Filter 
                   products={products && products}
                   onFilter={setFilters}
+                  isLoading={isLoading}
               />
           </Grid>
           {/* Product card and sorting side and lazy loading */}

@@ -13,7 +13,8 @@ import {
     Grid2 as Grid,
     Box,
     Typography,
-    Drawer
+    Drawer,
+    Skeleton
 } from '@mui/material';
 
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -24,12 +25,14 @@ import { ProductsProps } from '../Home';
 
 interface FilterProps {
     products?: ProductsProps[],
-    onFilter: (filters: { category: string; minPrice: number | null; maxPrice: number | null; search: string }) => void
+    onFilter: (filters: { category: string; minPrice: number | null; maxPrice: number | null; search: string }) => void,
+    isLoading: boolean
 }
 
 function Filter({
     products,
     onFilter,
+    isLoading
 }: FilterProps) {
 
     // useStates
@@ -90,6 +93,7 @@ function Filter({
 
     // Forms
     const productFilterForm = (
+
         <form 
           method='POST'
           onSubmit={formik.handleSubmit}
@@ -184,6 +188,39 @@ function Filter({
           </Box>
         </form>
     )
+
+    const lazyProductFilterForm = (
+        <Box 
+            sx={{ 
+                display: 'grid',
+                marginTop: '30px', 
+                gridGap: '30px',
+                marginInline: '30px'
+            }}
+        >
+       <Box sx={{ display: 'grid', gap: '5px' }}>
+            <Skeleton variant="rectangular" width={200} height={15} />
+            <Skeleton variant="rectangular" width={310} height={40} />
+        </Box>
+        <Box sx={{ display: 'grid', gap: '5px' }}>
+            <Skeleton variant="rectangular" width={200} height={15} />
+            <Skeleton variant="rectangular" width={310} height={40} />
+        </Box>
+        <Box sx={{ display: 'grid', gap: '5px' }}>
+            <Skeleton variant="rectangular" width={200} height={15} />
+            <Skeleton variant="rectangular" width={310} height={40} />
+        </Box>
+        <Box
+          sx={{
+            display: 'contents',
+            gap: '1px'
+          }}
+        >
+            <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
+            <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
+        </Box>
+      </Box>
+    )
     
     // Functions
     /* 
@@ -218,7 +255,7 @@ function Filter({
                     display: {xs: 'none', lg: 'block'}
                 }}
             >
-                {productFilterForm}
+                {isLoading ? lazyProductFilterForm : productFilterForm}
             </Box>
               {/* Mobile filter */}
             <Box
@@ -227,13 +264,18 @@ function Filter({
                     display: {xs: 'block', lg: 'none'}
                 }}
             >
-                <XButton 
-                    text={<FilterAltIcon  />}
-                    variant="contained" 
-                    buttonSize="large"
-                    onClick={openMobileFilter}
-                    sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
-                />
+                {isLoading ? (
+                      <Skeleton variant="rectangular" width={70} height={45} sx={{ float: 'right' }} />
+                ): (
+                    <XButton 
+                        text={<FilterAltIcon  />}
+                        variant="contained" 
+                        buttonSize="large"
+                        onClick={openMobileFilter}
+                        sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
+                    />
+                )}
+                
                 <Drawer
                     anchor={'right'}
                     open={Boolean(mobileFilter)}
