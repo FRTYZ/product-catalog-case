@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
+// Components
+import ShopBag from './Partials/ShopBag';
+
 // Material UI elements
 import { 
     Box, 
@@ -8,21 +11,14 @@ import {
     CardActions, 
     CardContent, 
     CardMedia, 
-    Typography, 
-    IconButton,
+    Typography,
     Button,
     Rating,
     } from '@mui/material';
 
-
-// Material UI Icons
-import { AddShoppingCart as AddShoppingCartIcon} from '@mui/icons-material';
-
-
 // Styles
 
 // Interfaces or Types
-
 import { ProductsProps } from '../../pages/Home/Home';
 
 interface AdCardProps {
@@ -115,9 +111,9 @@ const ProductCard = ({ data, grid }: AdCardProps) => {
                                     {item.price} TL
                                 </Typography>
                                 <Box sx={{ textAlign: 'right', float: 'right' }}>
-                                    <IconButton color="primary" aria-label="add to shopping cart">
-                                        <AddShoppingCartIcon />
-                                    </IconButton>
+                                    <ShopBag 
+                                        itemProduct={item}
+                                    />
                                 </Box>
                         </CardActions>
                     </Card>
