@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo} from 'react';
+import {useEffect, useState, useMemo, MouseEvent} from 'react';
 
 // Components
 import XSelectBox from '../../components/FormElements/XSelectBox';
@@ -18,8 +18,12 @@ import {
   Grid2 as Grid,
   Box,
   Typography,
+  Drawer,
+  IconButton
  } from '@mui/material';
 
+ import FilterAltIcon from '@mui/icons-material/FilterAlt';
+ import CloseIcon from '@mui/icons-material/Close';
 
 // Interfaces
 export interface ProductsProps {
@@ -38,6 +42,7 @@ function Home() {
   const [search, setSearch] = useState<string | null>('');
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [mobileFilter, setMobileFilter] = useState<null | HTMLElement>(null);
 
   const { 
       data: products, 
@@ -137,6 +142,7 @@ function Home() {
         }else{
           setSearch(null);
         }
+        closeMobileFilter()
         
       }
   })
@@ -149,112 +155,168 @@ function Home() {
     setSearch(null)
   }
 
+  const openMobileFilter = (event: MouseEvent<HTMLElement>) => {
+      setMobileFilter(event.currentTarget);
+  }
+  const closeMobileFilter = () => {
+      setMobileFilter(null)
+  }
+
+  const productFilterForm = (
+    <form 
+      method='POST'
+      onSubmit={formik.handleSubmit}
+    >
+      <Box 
+        sx={{ 
+          display: 'grid',
+          marginTop: '30px', 
+          gridGap: '30px',
+          marginInline: '30px'
+        }}
+      >
+        <Box>
+            <Typography>Arama</Typography>
+            <XInput 
+                type='text'
+                label=""
+                name="search"
+                placeholder='Ürün ismi ile ara'
+                value={formik.values.search}
+                handleChange={formik.handleChange}
+                size="small"
+            />
+        </Box>
+        <Box>
+            <Typography>Kategoriler</Typography>
+            <XSelectBox 
+              isFullWidth={true}
+              name="selectCategory"
+              value={formik.values.selectCategory}
+              selectItems={uniqueCategories}
+              handleChange={formik.handleChange}
+          />
+        </Box>
+        <Box>
+            <Typography>Fiyat Aralığı</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <XInput 
+                  type='number'
+                  label=""
+                  name="minPrice"
+                  placeholder='Minimum'
+                  value={formik.values.minPrice}
+                  handleChange={formik.handleChange}
+                  size="small"
+              />
+              <Typography sx={{
+                  textAlign: 'center', 
+                  marginInline: '10px'
+              }}>
+                  -
+              </Typography>
+              <XInput 
+                  type='number'
+                  label=""
+                  name="maxPrice"
+                  placeholder='Maximum'
+                  value={formik.values.maxPrice}
+                  handleChange={formik.handleChange}
+                  size="small"
+              />
+            </Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'contents',
+            gap: '1px'
+          }}
+        >
+          <XButton 
+            text='Ara' 
+            type="submit" 
+            variant="contained" 
+            buttonSize="large"
+            sx={{ backgroundColor: '#17a77f' }}
+          />
+          <XButton 
+            text='Temizle'
+            variant="contained" 
+            buttonSize="large"
+            onClick={() => handleResetForm()}
+            sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
+          />
+        </Box>
+      
+      </Box>
+    </form>
+  )
+
   return (
     <Container>
       <Grid container>
           <Grid size={{ xs: 12, lg: 4 }}>
               <Typography
                 sx={{
-                   marginInline: '30px',
+                   marginInline: {xs: 0, lg: '30px'},
+                   mb: '10px',
                    fontSize: '24px',
                    fontWeight: 500
                 }}
               >
                 Ürünlerimiz
               </Typography>
-              <form 
-                  method='POST'
-                  onSubmit={formik.handleSubmit}
+              <Box
+                sx={{
+                  display: {xs: 'none', lg: 'block'}
+                }}
               >
-                <Box 
-                  sx={{ 
-                    display: 'grid',
-                    marginTop: '30px', 
-                    gridGap: '30px',
-                    marginInline: '30px'
-                  }}
-                >
-                  <Box>
-                    <Typography>Arama</Typography>
-                    <XInput 
-                        type='text'
-                        label=""
-                        name="search"
-                        placeholder='Ürün ismi ile ara'
-                        value={formik.values.search}
-                        handleChange={formik.handleChange}
-                        size="small"
-                    />
-                </Box>
-                  <Box>
-                      <Typography>Kategoriler</Typography>
-                      <XSelectBox 
-                        isFullWidth={true}
-                        name="selectCategory"
-                        value={formik.values.selectCategory}
-                        selectItems={uniqueCategories}
-                        handleChange={formik.handleChange}
-                    />
-                  </Box>
-                  <Box>
-                      <Typography>Fiyat Aralığı</Typography>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <XInput 
-                            type='number'
-                            label=""
-                            name="minPrice"
-                            placeholder='Minimum'
-                            value={formik.values.minPrice}
-                            handleChange={formik.handleChange}
-                            size="small"
-                        />
-                        <Typography sx={{
-                            textAlign: 'center', 
-                            marginInline: '10px'
-                        }}>
-                            -
-                        </Typography>
-                        <XInput 
-                            type='number'
-                            label=""
-                            name="maxPrice"
-                            placeholder='Maximum'
-                            value={formik.values.maxPrice}
-                            handleChange={formik.handleChange}
-                            size="small"
-                        />
-                      </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'contents',
-                      gap: '1px'
-                    }}
-                  >
-                     <XButton 
-                      text='Ara' 
-                      type="submit" 
-                      variant="contained" 
-                      buttonSize="large"
-                      sx={{ backgroundColor: '#17a77f' }}
-                    />
-                     <XButton 
-                      text='Temizle'
-                      variant="contained" 
-                      buttonSize="large"
-                      onClick={() => handleResetForm()}
-                      sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
-                    />
-                  </Box>
-                 
-                </Box>
-              </form>
+                {productFilterForm}
+              </Box>
+             
+              <Box
+                sx={{ 
+                  position: 'absolute',
+                  display: {xs: 'block', lg: 'none'}
+                }}
+              >
+                  <XButton 
+                    text={<FilterAltIcon  />}
+                    variant="contained" 
+                    buttonSize="large"
+                    onClick={openMobileFilter}
+                    sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
+                  />
+                  <Drawer
+                      anchor={'right'}
+                      open={Boolean(mobileFilter)}
+                      onClose={closeMobileFilter}
+                      PaperProps={{
+                          sx: {
+                              height: '100%',
+                              maxHeight: 'none',
+                          },
+                      }}
+                    >
+                        <Box>
+                          <XButton 
+                            text={<CloseIcon />}
+                            variant="contained" 
+                            buttonSize="large"
+                            onClick={() => closeMobileFilter()}
+                            sx={{ color: '#17a77f', backgroundColor: '#ffffff', width: 'fit-content', float: 'right' }}
+                          />
+                        </Box>
+                        {productFilterForm}
+                        
+                    </Drawer>
+              </Box>
           </Grid>
           <Grid size={{ xs: 12, lg: 8 }}>
             <Box>

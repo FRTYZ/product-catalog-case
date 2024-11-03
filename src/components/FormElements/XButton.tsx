@@ -1,8 +1,8 @@
 import Button from '@mui/material/Button';
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, ReactElement } from "react";
 
 interface XButtonProps {
-    text?: string;
+    text?: ReactElement | string;
     onClick?: MouseEventHandler;
     buttonSize?: "large" | "small";
     buttonDisabled?: boolean;
