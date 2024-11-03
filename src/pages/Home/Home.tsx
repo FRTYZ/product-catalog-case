@@ -1,8 +1,9 @@
-import {useState, useMemo} from 'react';
+import {useState, useMemo, lazy, Suspense } from 'react';
 
 // Components
 import XSelectBox from '../../components/FormElements/XSelectBox';
 import ProductCard from '../../components/Cards/ProductCard';
+import LazyCard from '../../components/Cards/LazyCard';
 
 // Partials
 import Filter from './Partials/Filter';
@@ -18,9 +19,9 @@ import {
   Container,
   Grid2 as Grid,
   Box,
-  Typography
+  Typography,
+  Skeleton
 } from '@mui/material';
-
 
 // Interfaces and types
 export interface ProductsProps {
@@ -52,7 +53,6 @@ function Home() {
   });
 
   // useQuery
-
   /*      
     Product retrieves data and caches
   */
@@ -71,7 +71,6 @@ function Home() {
   });
 
   // Functions
-
   /*      
     Get product values
   */
@@ -83,7 +82,6 @@ function Home() {
   }
 
   // useMemos
-  
   /*      
     Filtering and sorting Product data
   */
@@ -139,29 +137,42 @@ function Home() {
                   onFilter={setFilters}
               />
           </Grid>
-          {/* Product card and sorting side */}
+          {/* Product card and sorting side and lazy loading */}
           <Grid size={{ xs: 12, lg: 8 }}>
             <Box>
               {/* Product sorting */}
-              <XSelectBox 
-                  isFullWidth={false}
-                  selectItems={[
-                    { id: 'default', value: 'Varsayılan' },
-                    { id: 'max_rate', value: 'Popülerlik' },
-                    { id: 'desc_price', value: 'Azalan fiyat' },
-                    { id: 'asc_price', value: 'Artan fiyat' }
-                  ]}
-                  value={sortOption}
-                  handleChange={(e: any) => setSortOption(e.target.value)}
-                  sx={{ float: 'right' }}
-              />
+              {!isLoading ? (
+                <XSelectBox 
+                    isFullWidth={false}
+                    selectItems={[
+                      { id: 'default', value: 'Varsayılan' },
+                      { id: 'max_rate', value: 'Popülerlik' },
+                      { id: 'desc_price', value: 'Azalan fiyat' },
+                      { id: 'asc_price', value: 'Artan fiyat' }
+                    ]}
+                    value={sortOption}
+                    handleChange={(e: any) => setSortOption(e.target.value)}
+                    sx={{ float: 'right' }}
+                />
+              ): (
+                  <Skeleton variant="rectangular" width={120} height={40} sx={{ float: 'right' }} />
+              )}
           </Box>
-          {/* Product card */}
-          {!isLoading && filteredProducts!.length > 0 ? (
-            <ProductCard data={filteredProducts!} grid={[4,4,4,6]} />
-          ): (
-            <>ürün yok</>
-          )}
+          <Box
+            sx={{
+              marginBlock: '30px',
+              display: 'inline-block'
+            }}
+          >
+            {/* Product card and lazy loading */}
+            <Suspense fallback={<LazyCard amount={12} grid={[4,4,4,6]} />}>
+                {!isLoading ? (
+                  <ProductCard data={filteredProducts} grid={[4,4,4,6]} />
+                ): (
+                  <LazyCard amount={12} grid={[4,4,4,6]} />
+                )}
+            </Suspense>
+          </Box>
         </Grid>
       </Grid>
     </Container>
