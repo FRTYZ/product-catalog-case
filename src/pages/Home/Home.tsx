@@ -1,31 +1,28 @@
-import {useEffect, useState, useMemo, MouseEvent} from 'react';
+import {useState, useMemo} from 'react';
 
 // Components
 import XSelectBox from '../../components/FormElements/XSelectBox';
-import XInput from '../../components/FormElements/XInput';
-import XButton from '../../components/FormElements/XButton';
-
 import ProductCard from '../../components/Cards/ProductCard';
 
-import { useQuery, useQueryClient } from 'react-query';
+// Partials
+import Filter from './Partials/Filter';
 
+// React Query
+import { useQuery } from 'react-query';
+
+// Alert
 import Swal from 'sweetalert2';
 
-import { useFormik } from 'formik';
-
+// Material UI
 import { 
   Container,
   Grid2 as Grid,
   Box,
-  Typography,
-  Drawer,
-  IconButton
- } from '@mui/material';
+  Typography
+} from '@mui/material';
 
- import FilterAltIcon from '@mui/icons-material/FilterAlt';
- import CloseIcon from '@mui/icons-material/Close';
 
-// Interfaces
+// Interfaces and types
 export interface ProductsProps {
   id: number;
   title: string;
@@ -35,15 +32,30 @@ export interface ProductsProps {
   images: string[],
 }
 
+type filters = {
+  category: string,
+  minPrice: number | null,
+  maxPrice: number | null,
+  search: string | null,
+}
+
 function Home() {
 
+  // useStates
   const [sortOption, setSortOption] = useState<string>('default');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [search, setSearch] = useState<string | null>('');
-  const [minPrice, setMinPrice] = useState<number | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
-  const [mobileFilter, setMobileFilter] = useState<null | HTMLElement>(null);
 
+  const [filters, setFilters] = useState<filters>({
+    category: 'all',
+    minPrice: null,
+    maxPrice: null,
+    search: '',
+  });
+
+  // useQuery
+
+  /*      
+    Product retrieves data and caches
+  */
   const { 
       data: products, 
       isLoading, 
@@ -58,6 +70,11 @@ function Home() {
       refetchInterval: false,
   });
 
+  // Functions
+
+  /*      
+    Get product values
+  */
   const getProducts = async () => {
       const response = await fetch('https://dummyjson.com/products');
       const data = await response.json();
@@ -65,41 +82,22 @@ function Home() {
       return data.products.reverse();
   }
 
-  const uniqueCategories = useMemo(() => {
-    const categorySet = new Set<string>();
-
-    products && products.forEach(product => {
-        if (product.category) {
-            categorySet.add(product.category);
-        }
-    });
-
-    // "Tümü" seçeneğini ekle
-    const allCategories = [
-        { id: 'all', value: 'TÜMÜ' }, // "Tümü" seçeneği
-        ...Array.from(categorySet).map(category => ({
-            id: category,
-            value: category.toUpperCase()
-        }))
-    ];
-
-    return allCategories;
-
-  }, [products]);
-
-
+  // useMemos
+  
+  /*      
+    Filtering and sorting Product data
+  */
   const filteredProducts = useMemo(() => {
-
     let result = products && products.filter(product => {
-      const matchesCategory = selectedCategory ? selectedCategory === 'all' ? product : product.category === selectedCategory : true;
-      const matchesMinPrice = minPrice !== null ? product.price >= minPrice : true;
-      const matchesMaxPrice = maxPrice !== null ? product.price <= maxPrice : true;
-      const matchesSearch = search !== null ? product.title.toLowerCase().includes(search!.toLowerCase()): true
+      const matchesCategory = filters.category ? filters.category === 'all' ? product : product.category === filters.category : true;
+      const matchesMinPrice = filters.minPrice !== null ? product.price >= filters.minPrice : true;
+      const matchesMaxPrice = filters.maxPrice !== null ? product.price <= filters.maxPrice : true;
+      const matchesSearch = filters.search !== null ? product.title.toLowerCase().includes(filters.search.toLowerCase()): true
 
       return matchesCategory && matchesMinPrice && matchesMaxPrice && matchesSearch;
     });
 
-    // Sıralama işlemi
+    // Sorting
     if (sortOption === 'max_rate') {
       result = result?.sort((a, b) => b.rating - a.rating);
     } else if (sortOption === 'desc_price') {
@@ -110,157 +108,21 @@ function Home() {
 
     return result;
 
-  }, [products, selectedCategory, minPrice, maxPrice, search, sortOption]);
+  }, [products, filters, sortOption]);
 
-  const formik = useFormik({
-      initialValues: {
-        minPrice: '',
-        maxPrice: '',
-        selectCategory: 'all',
-        search: ''
-      },
-      onSubmit: async (values) => {
-        const {search, minPrice, maxPrice, selectCategory} = values;
-
-        if(selectCategory){
-          setSelectedCategory(selectCategory);
-        }
-        if(maxPrice !== ''){
-          setMaxPrice(Number(maxPrice));
-        }else{
-          setMaxPrice(null);
-        }
-
-        if(minPrice !== ''){
-          setMinPrice(Number(minPrice));
-        }else{
-          setMinPrice(null);
-        }
-
-        if(search !== ''){
-          setSearch(search);
-        }else{
-          setSearch(null);
-        }
-        closeMobileFilter()
-        
-      }
-  })
-
-  const handleResetForm = () => {
-    formik.resetForm();
-    setSelectedCategory('all')
-    setMaxPrice(null)
-    setMinPrice(null)
-    setSearch(null)
+  // Check error
+  if(isError){
+    Swal.fire({
+        icon: 'error',
+        title: 'Hata',
+        text: 'Bir hata oluştu' + error,
+    })
   }
-
-  const openMobileFilter = (event: MouseEvent<HTMLElement>) => {
-      setMobileFilter(event.currentTarget);
-  }
-  const closeMobileFilter = () => {
-      setMobileFilter(null)
-  }
-
-  const productFilterForm = (
-    <form 
-      method='POST'
-      onSubmit={formik.handleSubmit}
-    >
-      <Box 
-        sx={{ 
-          display: 'grid',
-          marginTop: '30px', 
-          gridGap: '30px',
-          marginInline: '30px'
-        }}
-      >
-        <Box>
-            <Typography>Arama</Typography>
-            <XInput 
-                type='text'
-                label=""
-                name="search"
-                placeholder='Ürün ismi ile ara'
-                value={formik.values.search}
-                handleChange={formik.handleChange}
-                size="small"
-            />
-        </Box>
-        <Box>
-            <Typography>Kategoriler</Typography>
-            <XSelectBox 
-              isFullWidth={true}
-              name="selectCategory"
-              value={formik.values.selectCategory}
-              selectItems={uniqueCategories}
-              handleChange={formik.handleChange}
-          />
-        </Box>
-        <Box>
-            <Typography>Fiyat Aralığı</Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <XInput 
-                  type='number'
-                  label=""
-                  name="minPrice"
-                  placeholder='Minimum'
-                  value={formik.values.minPrice}
-                  handleChange={formik.handleChange}
-                  size="small"
-              />
-              <Typography sx={{
-                  textAlign: 'center', 
-                  marginInline: '10px'
-              }}>
-                  -
-              </Typography>
-              <XInput 
-                  type='number'
-                  label=""
-                  name="maxPrice"
-                  placeholder='Maximum'
-                  value={formik.values.maxPrice}
-                  handleChange={formik.handleChange}
-                  size="small"
-              />
-            </Box>
-        </Box>
-        <Box
-          sx={{
-            display: 'contents',
-            gap: '1px'
-          }}
-        >
-          <XButton 
-            text='Ara' 
-            type="submit" 
-            variant="contained" 
-            buttonSize="large"
-            sx={{ backgroundColor: '#17a77f' }}
-          />
-          <XButton 
-            text='Temizle'
-            variant="contained" 
-            buttonSize="large"
-            onClick={() => handleResetForm()}
-            sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
-          />
-        </Box>
-      
-      </Box>
-    </form>
-  )
 
   return (
     <Container>
       <Grid container>
+          {/* Filtering side */}
           <Grid size={{ xs: 12, lg: 4 }}>
               <Typography
                 sx={{
@@ -272,54 +134,15 @@ function Home() {
               >
                 Ürünlerimiz
               </Typography>
-              <Box
-                sx={{
-                  display: {xs: 'none', lg: 'block'}
-                }}
-              >
-                {productFilterForm}
-              </Box>
-             
-              <Box
-                sx={{ 
-                  position: 'absolute',
-                  display: {xs: 'block', lg: 'none'}
-                }}
-              >
-                  <XButton 
-                    text={<FilterAltIcon  />}
-                    variant="contained" 
-                    buttonSize="large"
-                    onClick={openMobileFilter}
-                    sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
-                  />
-                  <Drawer
-                      anchor={'right'}
-                      open={Boolean(mobileFilter)}
-                      onClose={closeMobileFilter}
-                      PaperProps={{
-                          sx: {
-                              height: '100%',
-                              maxHeight: 'none',
-                          },
-                      }}
-                    >
-                        <Box>
-                          <XButton 
-                            text={<CloseIcon />}
-                            variant="contained" 
-                            buttonSize="large"
-                            onClick={() => closeMobileFilter()}
-                            sx={{ color: '#17a77f', backgroundColor: '#ffffff', width: 'fit-content', float: 'right' }}
-                          />
-                        </Box>
-                        {productFilterForm}
-                        
-                    </Drawer>
-              </Box>
+              <Filter 
+                  products={products && products}
+                  onFilter={setFilters}
+              />
           </Grid>
+          {/* Product card and sorting side */}
           <Grid size={{ xs: 12, lg: 8 }}>
             <Box>
+              {/* Product sorting */}
               <XSelectBox 
                   isFullWidth={false}
                   selectItems={[
@@ -333,6 +156,7 @@ function Home() {
                   sx={{ float: 'right' }}
               />
           </Box>
+          {/* Product card */}
           {!isLoading && filteredProducts!.length > 0 ? (
             <ProductCard data={filteredProducts!} grid={[4,4,4,6]} />
           ): (
