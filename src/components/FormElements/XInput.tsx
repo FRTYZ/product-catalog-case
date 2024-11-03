@@ -7,8 +7,8 @@ import {
 type XInputProps = {
     type: string,
     label: string,
-    name: string,
-    value?: string,
+    name?: string,
+    value?: string | number,
     placeholder: string,
     hasError?: boolean,
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,

@@ -36,7 +36,6 @@ const XSelectBox = ({label, name, value, selectItems , hasError, isFullWidth, ha
                 onChange={handleChange}
                 {...rest}
             >
-                <MenuItem value="0">Seç</MenuItem>
                 {selectItems.length > 0 && selectItems.map((selectItem, key) => (
                     <MenuItem value={selectItem.id} key={key}>
                         {selectItem.value}

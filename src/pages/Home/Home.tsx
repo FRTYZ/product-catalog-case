@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 
 // Components
 import XSelectBox from '../../components/FormElements/XSelectBox';
@@ -18,15 +18,8 @@ import {
   Grid2 as Grid,
   Box,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails
  } from '@mui/material';
 
- import {
-  ExpandMore, 
-  Remove
-} from '@mui/icons-material';
 
 // Interfaces
 export interface ProductsProps {
@@ -38,11 +31,12 @@ export interface ProductsProps {
   images: string[],
 }
 
-import { SelectItemTypes } from '../../components/FormElements/XSelectBox';
-
 function Home() {
 
-  const [categories, setCategories] = useState<SelectItemTypes[]>([]);
+  const [sortOption, setSortOption] = useState<string>('default');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [minPrice, setMinPrice] = useState<number | null>(null);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
   const { 
       data: products, 
@@ -65,55 +59,84 @@ function Home() {
       return data.products.reverse();
   }
 
-  useEffect(() => {
-    if(products && products.length > 0){
-        const categorySet = new Set<string>();
+  const uniqueCategories = useMemo(() => {
+    const categorySet = new Set<string>();
 
-        products.forEach(product => {
-            if (product.category) {
-                categorySet.add(product.category);
-            }
-        });
+    products && products.forEach(product => {
+        if (product.category) {
+            categorySet.add(product.category);
+        }
+    });
 
-        // Set'i array'e dönüştürme
+    // "Tümü" seçeneğini ekle
+    const allCategories = [
+        { id: 'all', value: 'TÜMÜ' }, // "Tümü" seçeneği
+        ...Array.from(categorySet).map(category => ({
+            id: category,
+            value: category.toUpperCase()
+        }))
+    ];
 
-        const uniqueCategories = Array.from(categorySet).map(category => ({
-          id: category,
-          value: category.toUpperCase()
-        }));
+    return allCategories;
 
-        setCategories(uniqueCategories)
+  }, [products]);
+
+
+  const filteredProducts = useMemo(() => {
+
+    let result = products && products.filter(product => {
+      const matchesCategory = selectedCategory ? selectedCategory === 'all' ? product : product.category === selectedCategory : true;
+      const matchesMinPrice = minPrice !== null ? product.price >= minPrice : true;
+      const matchesMaxPrice = maxPrice !== null ? product.price <= maxPrice : true;
+      return matchesCategory && matchesMinPrice && matchesMaxPrice;
+    });
+
+    // Sıralama işlemi
+    if (sortOption === 'max_rate') {
+      result = result?.sort((a, b) => b.rating - a.rating);
+    } else if (sortOption === 'desc_price') {
+      result = result?.sort((a, b) => b.price - a.price);
+    } else if (sortOption === 'asc_price') {
+      result = result?.sort((a, b) => a.price - b.price);
     }
-  }, [products])
 
+    return result;
 
-  const initialValues: {minPrice: string, maxPrice: string, selectCategory: string} = {
-    minPrice: '',
-    maxPrice: '',
-    selectCategory: '0'
-  }
+  }, [products, selectedCategory, minPrice, maxPrice, sortOption]);
+
   const formik = useFormik({
-      enableReinitialize: true,
-      initialValues,
+      initialValues: {
+        minPrice: '',
+        maxPrice: '',
+        selectCategory: 'all'
+      },
       onSubmit: async (values) => {
-          const {minPrice, maxPrice, selectCategory} = values;
+        const {minPrice, maxPrice, selectCategory} = values;
 
-          if(minPrice){
-              if(minPrice || maxPrice){
-                  /* setPrice({minPrice, maxPrice}) */
-              }
-          }
-          else{
-              await Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: "You should determine a price range.",
-                  showConfirmButton: false,
-                  timer: 1500
-              });
-          }
+        if(selectCategory){
+          setSelectedCategory(selectCategory);
+        }
+        if(maxPrice !== ''){
+          setMaxPrice(Number(maxPrice));
+        }else{
+          setMaxPrice(null);
+        }
+
+        if(minPrice !== ''){
+          setMinPrice(Number(minPrice));
+        }else{
+          setMinPrice(null);
+        }
+        
       }
   })
+
+  const handleResetForm = () => {
+    formik.resetForm();
+    setSelectedCategory('all')
+    setMaxPrice(null)
+    setMinPrice(null)
+  }
 
 
   return (
@@ -147,7 +170,7 @@ function Home() {
                         isFullWidth={true}
                         name="selectCategory"
                         value={formik.values.selectCategory}
-                        selectItems={categories}
+                        selectItems={uniqueCategories}
                         handleChange={formik.handleChange}
                     />
                   </Box>
@@ -186,12 +209,28 @@ function Home() {
                         />
                       </Box>
                   </Box>
-                  <XButton 
-                    text='Ara' 
-                    type="submit" 
-                    variant="contained" 
-                    sx={{ backgroundColor: '#17a77f' }}
-                  />
+                  <Box
+                    sx={{
+                      display: 'contents',
+                      gap: '1px'
+                    }}
+                  >
+                     <XButton 
+                      text='Ara' 
+                      type="submit" 
+                      variant="contained" 
+                      buttonSize="large"
+                      sx={{ backgroundColor: '#17a77f' }}
+                    />
+                     <XButton 
+                      text='Temizle'
+                      variant="contained" 
+                      buttonSize="large"
+                      onClick={() => handleResetForm()}
+                      sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
+                    />
+                  </Box>
+                 
                 </Box>
               </form>
           </Grid>
@@ -200,20 +239,20 @@ function Home() {
               <XSelectBox 
                   isFullWidth={false}
                   selectItems={[
-                    {
-                      id: 'min_price',
-                      value: 'Artan fiyat'
-                    },
-                    {
-                      id: 'max_price',
-                      value: 'Azalan fiyat'
-                    }
+                    { id: 'default', value: 'Varsayılan' },
+                    { id: 'max_rate', value: 'Popülerlik' },
+                    { id: 'desc_price', value: 'Azalan fiyat' },
+                    { id: 'asc_price', value: 'Artan fiyat' }
                   ]}
+                  value={sortOption}
+                  handleChange={(e: any) => setSortOption(e.target.value)}
                   sx={{ float: 'right' }}
               />
           </Box>
-          {!isLoading && (
-            <ProductCard data={products!} grid={[4,4,4,6]} />
+          {!isLoading && filteredProducts!.length > 0 ? (
+            <ProductCard data={filteredProducts!} grid={[4,4,4,6]} />
+          ): (
+            <>ürün yok</>
           )}
         </Grid>
       </Grid>
