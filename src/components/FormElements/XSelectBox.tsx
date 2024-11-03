@@ -14,26 +14,27 @@ type XSelectProps = {
         value?: string
     }[], 
     hasError?: boolean, 
-    handleFormik?: any, 
+    isFullWidth?: true | false,  
+    handleOnChange?:  () => void, 
     [key: string]: any
 }
 
-export const XSelectBox = ({label, name, value, selectItems , hasError, handleFormik, ...rest }: XSelectProps) => {
+export const XSelectBox = ({label, name, value, selectItems , hasError, isFullWidth, handleOnChange, ...rest }: XSelectProps) => {
 
     return (
         <>
             <InputLabel shrink>{label}</InputLabel>
             <TextField
                 select
-                fullWidth
+                fullWidth={isFullWidth}
                 size='small'
                 name={name}
                 value={value}
                 error={hasError ? Boolean(value == '' && hasError) : false}
-                onChange={handleFormik.handleChange}
+                onChange={handleOnChange}
                 {...rest}
             >
-                <MenuItem value="0">Choose</MenuItem>
+                <MenuItem value="0">Seç</MenuItem>
                 {selectItems.length > 0 && selectItems.map((selectItem, key) => (
                     <MenuItem value={selectItem.id} key={key}>
                         {selectItem.value}
