@@ -11,15 +11,25 @@ import './index.css'
 
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from 'styled-components'
+import { Provider } from 'react-redux';
 
 import theme from './theme.tsx';
+import store from './redux/store.tsx';
+
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.Fragment>
      <ThemeProvider theme={theme}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
+        <Provider store={store}>
+            <QueryClientProvider client={queryClient}>
+              <BrowserRouter>
+                  <App />
+              </BrowserRouter>
+            </QueryClientProvider>
+        </Provider>
     </ThemeProvider>
   </React.Fragment>,
 )
