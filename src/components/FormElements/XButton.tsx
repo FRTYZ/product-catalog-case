@@ -3,13 +3,13 @@ import { MouseEventHandler } from "react";
 
 interface XButtonProps {
     text?: string;
-    onClick: MouseEventHandler;
+    onClick?: MouseEventHandler;
     buttonSize?: "large" | "small";
     buttonDisabled?: boolean;
     [key: string]: any
 }
 
-export function XButton({
+function XButton({
     text, 
     onClick,
     buttonSize, 
@@ -26,3 +26,5 @@ export function XButton({
         >{text}</Button>
     )
 }
+
+export default XButton

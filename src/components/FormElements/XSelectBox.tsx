@@ -5,21 +5,23 @@ import {
     MenuItem
 } from '@mui/material';
 
-type XSelectProps = {
-    label?: string, 
-    name?: string, 
-    value?: string, 
-    selectItems: {
-        id?: string,
-        value?: string
-    }[], 
-    hasError?: boolean, 
-    isFullWidth?: true | false,  
-    handleOnChange?:  () => void, 
+export type SelectItemTypes = {
+    id?: string,
+    value?: string
+}
+
+interface XSelectProps {
+    label?: string;
+    name?: string;
+    value?: string; 
+    selectItems: SelectItemTypes[];
+    hasError?: boolean;
+    isFullWidth?: true | false;
+    handleChange?:  any;
     [key: string]: any
 }
 
-export const XSelectBox = ({label, name, value, selectItems , hasError, isFullWidth, handleOnChange, ...rest }: XSelectProps) => {
+const XSelectBox = ({label, name, value, selectItems , hasError, isFullWidth, handleChange, ...rest }: XSelectProps) => {
 
     return (
         <>
@@ -31,7 +33,7 @@ export const XSelectBox = ({label, name, value, selectItems , hasError, isFullWi
                 name={name}
                 value={value}
                 error={hasError ? Boolean(value == '' && hasError) : false}
-                onChange={handleOnChange}
+                onChange={handleChange}
                 {...rest}
             >
                 <MenuItem value="0">Seç</MenuItem>
@@ -44,3 +46,5 @@ export const XSelectBox = ({label, name, value, selectItems , hasError, isFullWi
         </>
     )
 }
+
+export default XSelectBox

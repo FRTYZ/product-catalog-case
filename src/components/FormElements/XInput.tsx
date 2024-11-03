@@ -15,7 +15,7 @@ type XInputProps = {
     [key: string]: any
 }
 
-export const XInput  = ({
+const XInput  = ({
     type = 'text', 
     label, 
     name, 
@@ -50,3 +50,5 @@ export const XInput  = ({
         </>       
     )
 }
+
+export default XInput
