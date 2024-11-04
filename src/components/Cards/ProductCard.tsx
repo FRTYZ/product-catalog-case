@@ -63,62 +63,74 @@ const ProductCard = ({ data, grid }: AdCardProps) => {
 
     return (
         <Grid container spacing={2}>
-            {cardData && cardData.map((item, index) => (
-                <Grid size={{ lg: grid[0], md: grid[1], sm:grid[2], xs: grid[3]}} key={index}>
-                    <Card sx={{
-                        maxWidth: '345px'
-                    }}>
-                        <CardMedia
-                            component="img"
-                            height="194"
-                            image={item.images[0]}
-                            alt={item.title}
-                        />
-                        <CardContent
-                            sx={{
-                                paddingInline: '10px',
-                            }}
-                        >
-                            <Rating name="half-rating" defaultValue={item.rating} precision={item.rating} />
-                            <Typography
-                                variant="body2" 
+            {data && data.length > 0 ? (
+                cardData.map((item, index) => (
+                    <Grid size={{ lg: grid[0], md: grid[1], sm:grid[2], xs: grid[3]}} key={index}>
+                        <Card sx={{
+                            maxWidth: '345px'
+                        }}>
+                            <CardMedia
+                                component="img"
+                                height="194"
+                                image={item.images[0]}
+                                alt={item.title}
+                            />
+                            <CardContent
                                 sx={{
-                                    fontSize: '16px',
-                                    lineHeight: '24px',
-                                    fontWeight: 500,
-                                    color: '#3b3b3b',
-                                    paddingLeft: '4px',
-                                    marginTop: '10px'
+                                    paddingInline: '10px',
                                 }}
-                            > {item?.title}</Typography>
-                        </CardContent>
-                        <CardActions 
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                paddingInline: '10px'
-                            }}
-                        >
-                                <Typography 
+                            >
+                                <Rating name="half-rating" defaultValue={item.rating} precision={item.rating} />
+                                <Typography
+                                    variant="body2" 
                                     sx={{
-                                        textAlign: 'right',
-                                        fontSize: '20px',
-                                        lineHeight: '26px',
+                                        fontSize: '16px',
+                                        lineHeight: '24px',
                                         fontWeight: 500,
-                                        color: '#3b3b3b'
+                                        color: '#3b3b3b',
+                                        paddingLeft: '4px',
+                                        marginTop: '10px'
                                     }}
-                                >
-                                    {item.price} TL
-                                </Typography>
-                                <Box sx={{ textAlign: 'right', float: 'right' }}>
-                                    <ShopBag 
-                                        itemProduct={item}
-                                    />
-                                </Box>
-                        </CardActions>
-                    </Card>
+                                > {item?.title}</Typography>
+                            </CardContent>
+                            <CardActions 
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    paddingInline: '10px'
+                                }}
+                            >
+                                    <Typography 
+                                        sx={{
+                                            textAlign: 'right',
+                                            fontSize: '20px',
+                                            lineHeight: '26px',
+                                            fontWeight: 500,
+                                            color: '#3b3b3b'
+                                        }}
+                                    >
+                                        {item.price} TL
+                                    </Typography>
+                                    <Box sx={{ textAlign: 'right', float: 'right' }}>
+                                        <ShopBag 
+                                            itemProduct={item}
+                                        />
+                                    </Box>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                ))
+            ): (
+                <Grid size={{xs: 12, lg: 12}}>
+                    <Typography
+                        sx={{
+                            fontSize: '18px',
+                            mt: 4,
+                            
+                        }}
+                    >Veri bulunamadı veya farklı filtreleme işlemi uygulayabilirsiniz.</Typography>
                 </Grid>
-            ))}
+            )}
             {!endPagination && (data && data.length > 10) && (
                 <Grid size={{ xs: 12, lg: 12 }}>
                     <Box sx={{

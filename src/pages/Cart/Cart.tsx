@@ -27,7 +27,7 @@ function Cart() {
 
     return (
         <Container>
-            {bagItems.length > 0 && (
+            {bagItems.length > 0 ? (
                 <Grid container spacing={8}>
                     <Grid size={{ xs: 12, lg: 8 }}>
                         <Typography
@@ -145,7 +145,50 @@ function Cart() {
                         </Box>
                     </Grid>
                 </Grid>
-              
+            ): (
+                <>
+                <Typography
+                    sx={{
+                        fontSize: '21px',
+                        fontWeight: 600,
+                        lineHeight: '26.25px',
+                        marginBottom: 4,
+                        textAlign: {xs: 'center', lg: 'left'}
+                    }}
+                >
+                    Sepet
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'block',
+                        gap: 2,
+                        my: 4,
+                        textAlign: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontSize: '18px'
+                        }}
+                    >Sepetinizde henüz ürün bulunmuyor. Dilerseniz ürün katalog sayfasına gidip, dilediğiniz ürünü seçebilirsiniz.</Typography>
+                    <XButton 
+                        text='Ürün katalog sayfası' 
+                        variant="contained" 
+                        buttonSize="large"
+                        href='/'
+                        sx={{ 
+                            mt: 4,
+                            backgroundColor: '#17a77f',
+                            color: 'white',
+                            fontWeight: 600,
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                        }}
+                    />
+
+                </Box>
+                </>
             )}
         </Container>
     )
