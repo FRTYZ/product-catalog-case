@@ -156,6 +156,7 @@ function ShopCard({
                           text={ <RemoveIcon sx={{ fontSize: '20px' }}  />} 
                           variant="contained" 
                           buttonSize="small"
+                          aria-label="decrement"
                           onClick={() => {handleDecrementCounter(item.id, item.amount )}}
                         />
                         <Typography>{item.amount}</Typography>
@@ -163,14 +164,16 @@ function ShopCard({
                             text={ <AddIcon sx={{ fontSize: '20px' }} />} 
                             variant="contained" 
                             buttonSize="small"
+                            aria-label="increment"
                             onClick={() => {handleIncrementCounter(item.id, item.amount)}}
                         />
                     </StyledAmountCardBox>
                     <StyledPriceTypography>{Math.round((item.price * item.amount)  * 100) / 100} TL</StyledPriceTypography>
                     <StyledRemoveButton 
                         text={<DeleteIcon />} 
-                        variant="contained" 
+                        variant="contained"
                         buttonSize="small"
+                         aria-label="remove"
                         onClick={() => handleRemoveItem(item.id)}
                     />
                   </StyledCardBox>
