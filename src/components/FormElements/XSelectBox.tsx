@@ -14,6 +14,7 @@ interface XSelectProps {
     label?: string;
     name?: string;
     value?: string; 
+    placeholder?: string;
     selectItems: SelectItemTypes[];
     hasError?: boolean;
     isFullWidth?: true | false;
@@ -21,17 +22,18 @@ interface XSelectProps {
     [key: string]: any
 }
 
-const XSelectBox = ({label, name, value, selectItems , hasError, isFullWidth, handleChange, ...rest }: XSelectProps) => {
+const XSelectBox = ({label, name, value, selectItems , hasError, placeholder, isFullWidth, handleChange, ...rest }: XSelectProps) => {
 
     return (
         <>
-            <InputLabel shrink>{label}</InputLabel>
             <TextField
                 select
                 fullWidth={isFullWidth}
+                label={label}
                 size='small'
                 name={name}
                 value={value}
+                placeholder={placeholder}
                 error={hasError ? Boolean(value == '' && hasError) : false}
                 onChange={handleChange}
                 {...rest}

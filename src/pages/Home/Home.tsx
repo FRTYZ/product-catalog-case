@@ -168,6 +168,7 @@ function Home() {
               {!isLoading ? (
                 <XSelectBox 
                     isFullWidth={false}
+                    placeholder='Sıralama'
                     selectItems={[
                       { id: 'default', value: 'Varsayılan' },
                       { id: 'max_rate', value: 'Popülerlik' },
