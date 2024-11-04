@@ -1,9 +1,17 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
+
+// React router dom
 import { BrowserRouter as Router } from 'react-router-dom';
+
+// Redux
 import { Provider } from 'react-redux';
 import store from '../../redux/store';
+
+// React Query
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+
+// Component or pages
 import Home from './Home';
 
 const queryClient = new QueryClient();
