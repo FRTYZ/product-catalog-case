@@ -169,6 +169,7 @@ function Filter({
                 <XSelectBox 
                   isFullWidth={true}
                   name="selectCategory"
+                  placeholder='Kategoriler'
                   value={formik.values.selectCategory}
                   selectItems={uniqueCategories}
                   handleChange={formik.handleChange}
