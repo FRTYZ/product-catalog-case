@@ -10,7 +10,7 @@ type XInputProps = {
     name?: string,
     value?: string | number,
     placeholder: string,
-    hasError?: boolean,
+    hasError?: string,
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
     [key: string]: any
 }
@@ -35,7 +35,7 @@ const XInput  = ({
                 name={name}
                 placeholder={placeholder ? placeholder : ''}
                 value={value}
-                error={hasError ? Boolean(value == '' && hasError) : false}
+                error={hasError ? true : false}
                 onChange={handleChange}
                 InputProps={type == 'email' ? {
                     endAdornment: (

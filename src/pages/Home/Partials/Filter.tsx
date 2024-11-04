@@ -20,6 +20,9 @@ import {
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from '@mui/icons-material/Close';
 
+// Alert
+import Swal from 'sweetalert2';
+
 // İnterfaces and types
 import { ProductsProps } from '../Home';
 
@@ -76,9 +79,24 @@ function Filter({
           selectCategory: 'all',
           search: ''
         },
+        validate: (values) => {
+            const errors: { [key: string]: string } = {};
+
+            const {maxPrice, minPrice } = values;
+
+            if (minPrice !== '' && !((/^\d+$/.test(minPrice) && Number(minPrice) >= 1))) {
+              errors.minPrice = "0'dan büyük fiyat belirlemelisiniz.";
+            }
+        
+            if (maxPrice !== '' && !((/^\d+$/.test(maxPrice) && Number(maxPrice) >= 1))) {
+              errors.maxPrice = "0'dan büyük fiyat belirlemelisiniz.";
+            }
+
+            return errors;
+        },
         onSubmit: async (values) => {
           const {search, minPrice, maxPrice, selectCategory} = values;
-
+            
           onFilter({
             category: selectCategory,
             minPrice: minPrice !== '' ? Number(minPrice) : null,
@@ -144,6 +162,7 @@ function Filter({
                       placeholder='Minimum'
                       value={formik.values.minPrice}
                       handleChange={formik.handleChange}
+                      hasError={formik.errors.minPrice}
                       size="small"
                   />
                   <Typography sx={{
@@ -158,11 +177,24 @@ function Filter({
                       name="maxPrice"
                       placeholder='Maximum'
                       value={formik.values.maxPrice}
+                      hasError={formik.errors.maxPrice}
                       handleChange={formik.handleChange}
                       size="small"
                   />
                 </Box>
+              
+                <Box
+                    sx={{
+                        marginTop: 2,
+                        color: 'red'
+                    }}
+                >
+                    {formik.errors.maxPrice || formik.errors.minPrice && 
+                        <Typography>{formik.errors.maxPrice || formik.errors.minPrice}</Typography>
+                    }
+                </Box>
             </Box>
+           
             <Box
               sx={{
                 display: 'contents',
@@ -175,6 +207,7 @@ function Filter({
                 variant="contained" 
                 buttonSize="large"
                 sx={{ backgroundColor: '#17a77f' }}
+                disabled={!formik.isValid}
               />
               <XButton 
                 text='Temizle'
@@ -231,9 +264,11 @@ function Filter({
         onFilter({
             category: 'all',
             minPrice: null,
-            maxPrice:null,
+            maxPrice: null,
             search: ''
         });
+
+        formik.resetForm();
     }
     
     // Drawer functions
