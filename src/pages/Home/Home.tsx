@@ -22,6 +22,30 @@ import {
   Typography,
   Skeleton
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+// Styled Components
+const StyledHeadTypography = styled(Typography)(({ theme }) => ({
+    marginInline: '30px',
+    [theme.breakpoints.down('sm')]: {
+      marginInline: '0'
+    },
+    mb: '10px',
+    fontSize: '24px',
+    fontWeight: 500
+}));
+
+const StyledHeadSkeleton = styled(Skeleton)(({ theme }) => ({
+    marginInline: '30px',
+    [theme.breakpoints.down('sm')]: {
+      marginInline: '0'
+    }
+}));
+
+const StyledCardBox = styled(Box)(({ theme }) => ({
+    marginBlock: '30px',
+    display: 'inline-block'
+}));
 
 // Interfaces and types
 export interface ProductsProps {
@@ -123,18 +147,11 @@ function Home() {
           {/* Filtering side */}
           <Grid size={{ xs: 12, lg: 4 }}>
               {isLoading ? (
-                <Skeleton variant="rectangular" width={200} height={40} sx={{ marginInline: {xs: 0, lg: '30px'}}} />
+                <StyledHeadSkeleton variant="rectangular" width={200} height={40} />
               ): (
-                <Typography
-                  sx={{
-                    marginInline: {xs: 0, lg: '30px'},
-                    mb: '10px',
-                    fontSize: '24px',
-                    fontWeight: 500
-                  }}
-                >
+                <StyledHeadTypography>
                   Ürünlerimiz
-                </Typography>
+                </StyledHeadTypography>
               )}
              
               <Filter 
@@ -164,12 +181,7 @@ function Home() {
                   <Skeleton variant="rectangular" width={120} height={40} sx={{ float: 'right' }} />
               )}
           </Box>
-          <Box
-            sx={{
-              marginBlock: '30px',
-              display: 'inline-block'
-            }}
-          >
+          <StyledCardBox>
             {/* Product card and lazy loading */}
             <Suspense fallback={<LazyCard amount={12} grid={[4,4,4,6]} />}>
                 {!isLoading ? (
@@ -178,7 +190,7 @@ function Home() {
                   <LazyCard amount={12} grid={[4,4,4,6]} />
                 )}
             </Suspense>
-          </Box>
+          </StyledCardBox>
         </Grid>
       </Grid>
     </Container>
