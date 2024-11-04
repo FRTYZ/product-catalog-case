@@ -16,6 +16,9 @@ import {
     Rating,
     } from '@mui/material';
 
+// Assets
+import noImage from '/no-image.png'
+
 // Styles
 
 // Interfaces or Types
@@ -72,8 +75,9 @@ const ProductCard = ({ data, grid }: AdCardProps) => {
                             <CardMedia
                                 component="img"
                                 height="194"
-                                image={item.images[0]}
+                                image={item?.images[0] || noImage}
                                 alt={item.title}
+                                loading="lazy"
                             />
                             <CardContent
                                 sx={{
