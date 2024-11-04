@@ -16,7 +16,7 @@ Projede kullanılan teknolojiler
 ## Proje kurulumu için gereklilikler
 * NodeJS (version minimum v20.10.0)
 
-## Proje nasıl kurulur (Git ile)
+## Proje nasıl kurulur
 
 * #### Terminali açıp bu komutu kullanabilirsiniz
 
@@ -37,6 +37,12 @@ git clone git@github.com:FRTYZ/product-catalog-case.git
 npm install
 ```
 
+#### Not: node_modules paketleri yüklemezse bu komutu kullanabilirsiniz.
+```
+npm cache verify
+npm install
+```
+
 #### Projeyi çalıştırma
 ```
 npm run dev
@@ -44,7 +50,7 @@ npm run dev
 
 #### Projeden build alma
 ```
-npm run dev
+npm run build
 ```
 
 #### Projedeki testleri çalıştırma
