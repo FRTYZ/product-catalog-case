@@ -7,6 +7,25 @@ import {
     Skeleton,
     } from '@mui/material';
 
+import { styled } from '@mui/material/styles';
+
+// Styled components
+const StyledCard = styled(Card)(({ theme }) => ({
+    maxWidth: '345px'
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+    display:'grid',
+    gap: '5px',
+    paddingInline: '10px'
+}));
+
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingInline: '10px'
+}));
+
 // Interfaces or Types
 
 interface LazyCardProps {
@@ -22,29 +41,17 @@ const LazyCard = ({amount, grid}: LazyCardProps ) => {
         <Grid container spacing={2}>
             {dummyCards.map((_, index) => (
                 <Grid size={{ lg: grid[0], md: grid[1], sm:grid[2], xs: grid[3]}} key={index}>
-                    <Card sx={{
-                        maxWidth: '345px'
-                    }}>
+                    <StyledCard>
                         <Skeleton variant="rectangular" height={194} />
-                        <CardContent
-                            sx={{
-                                display:'grid',
-                                gap: '5px',
-                                paddingInline: '10px'
-                            }}
-                        >
+                        <StyledCardContent>
                             <Skeleton variant="rectangular" height={30} />
                             <Skeleton variant="rectangular" height={30} />
-                        </CardContent>
-                        <CardActions sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            paddingInline: '10px'
-                        }}>
+                        </StyledCardContent>
+                        <StyledCardActions>
                                 <Skeleton variant="rectangular" width={100} height={30} />
                                 <Skeleton variant="rectangular" width={30} height={30} />
-                        </CardActions>
-                    </Card>
+                        </StyledCardActions>
+                    </StyledCard>
                 </Grid>
             ))}
         </Grid>

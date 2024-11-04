@@ -12,14 +12,51 @@ import {
     CardContent, 
     CardMedia, 
     Typography,
-    Button,
     Rating,
     } from '@mui/material';
+
+import { styled } from '@mui/material/styles';
 
 // Assets
 import noImage from '/no-image.png'
 
-// Styles
+// Styled components
+const StyledCard = styled(Card)(({ theme }) => ({
+   maxWidth: '345px'
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+   paddingInline: '10px'
+}));
+
+const StyledTitleTypography = styled(Typography)(({ theme }) => ({
+    fontSize: '16px',
+    lineHeight: '24px',
+    fontWeight: 500,
+    color: '#3b3b3b',
+    paddingLeft: '4px',
+    marginTop: '10px'
+}));
+
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingInline: '10px'
+}));
+
+const StyledPriceTypography = styled(Typography)(({ theme }) => ({
+    textAlign: 'right',
+    fontSize: '20px',
+    lineHeight: '26px',
+    fontWeight: 500,
+    color: '#3b3b3b'
+}));
+
+const StyledShopBagBox = styled(Box)(({ theme }) => ({
+    textAlign: 'right', 
+    float: 'right'
+}));
+
 
 // Interfaces or Types
 import { ProductsProps } from '../../pages/Home/Home';
@@ -78,9 +115,7 @@ const ProductCard = ({ data, grid }: AdCardProps) => {
 
                 cardData.map((item, index) => (
                     <Grid size={{ lg: grid[0], md: grid[1], sm:grid[2], xs: grid[3]}} key={index}>
-                        <Card sx={{
-                            maxWidth: '345px'
-                        }}>
+                        <StyledCard>
                             <CardMedia
                                 component="img"
                                 height="194"
@@ -88,60 +123,24 @@ const ProductCard = ({ data, grid }: AdCardProps) => {
                                 alt={item.title}
                                 loading="lazy"
                             />
-                            <CardContent
-                                sx={{
-                                    paddingInline: '10px',
-                                }}
-                            >
+                            <StyledCardContent>
                                 <Rating name="half-rating" defaultValue={item.rating} precision={item.rating} />
-                                <Typography
-                                    variant="body2" 
-                                    sx={{
-                                        fontSize: '16px',
-                                        lineHeight: '24px',
-                                        fontWeight: 500,
-                                        color: '#3b3b3b',
-                                        paddingLeft: '4px',
-                                        marginTop: '10px'
-                                    }}
-                                > {item?.title}</Typography>
-                            </CardContent>
-                            <CardActions 
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    paddingInline: '10px'
-                                }}
-                            >
-                                    <Typography 
-                                        sx={{
-                                            textAlign: 'right',
-                                            fontSize: '20px',
-                                            lineHeight: '26px',
-                                            fontWeight: 500,
-                                            color: '#3b3b3b'
-                                        }}
-                                    >
-                                        {item.price} TL
-                                    </Typography>
-                                    <Box sx={{ textAlign: 'right', float: 'right' }}>
+                                <StyledTitleTypography variant="body2">{item?.title}</StyledTitleTypography>
+                            </StyledCardContent>
+                            <StyledCardActions>
+                                    <StyledPriceTypography>{item.price} TL</StyledPriceTypography>
+                                    <StyledShopBagBox>
                                         <ShopBag 
                                             itemProduct={item}
                                         />
-                                    </Box>
-                            </CardActions>
-                        </Card>
+                                    </StyledShopBagBox>
+                            </StyledCardActions>
+                        </StyledCard>
                     </Grid>
                 ))
             ): (
                 <Grid size={{xs: 12, lg: 12}}>
-                    <Typography
-                        sx={{
-                            fontSize: '18px',
-                            mt: 4,
-                            
-                        }}
-                    >Veri bulunamadı veya farklı filtreleme işlemi uygulayabilirsiniz.</Typography>
+                    <StyledTitleTypography>Veri bulunamadı veya farklı filtreleme işlemi uygulayabilirsiniz.</StyledTitleTypography>
                 </Grid>
             )}
         </Grid>
