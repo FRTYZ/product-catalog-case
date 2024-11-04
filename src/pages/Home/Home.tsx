@@ -28,7 +28,8 @@ import { styled } from '@mui/material/styles';
 const StyledHeadTypography = styled(Typography)(({ theme }) => ({
     marginInline: '30px',
     [theme.breakpoints.down('sm')]: {
-      marginInline: '0'
+      marginInline: '0',
+      marginBottom: '10px',
     },
     mb: '10px',
     fontSize: '24px',

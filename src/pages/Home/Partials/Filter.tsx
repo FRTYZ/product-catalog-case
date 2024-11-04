@@ -16,12 +16,47 @@ import {
     Drawer,
     Skeleton
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CloseIcon from '@mui/icons-material/Close';
 
-// Alert
-import Swal from 'sweetalert2';
+// Styled components
+const StyledMainFormBox = styled(Box)(({ theme }) => ({
+    display: 'grid',
+    marginTop: '30px', 
+    gridGap: '30px',
+    marginInline: '30px'
+}));
+
+const StyledPricesBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+}));
+
+const StyledBetweenPricesTypography = styled(Typography)(({ theme }) => ({
+    textAlign: 'center', 
+    marginInline: '10px'
+}));
+
+const StyledButtonBox = styled(Box)(({ theme }) => ({
+    display: 'contents',
+    gap: '1px'
+}));
+
+const StyledDrawerOpenButton = styled(XButton)(({ theme }) => ({
+    color: '#17a77f', 
+    backgroundColor: '#ffffff', 
+    width: 'fit-content', 
+    float: 'right'
+}));
+
+const StyledDrawerCloseButton = styled(XButton)(({ theme }) => ({
+    color: '#17a77f', 
+    backgroundColor: '#ffffff'
+}));
+
 
 // İnterfaces and types
 import { ProductsProps } from '../Home';
@@ -116,14 +151,7 @@ function Filter({
           method='POST'
           onSubmit={formik.handleSubmit}
         >
-          <Box 
-            sx={{ 
-              display: 'grid',
-              marginTop: '30px', 
-              gridGap: '30px',
-              marginInline: '30px'
-            }}
-          >
+          <StyledMainFormBox>
             <Box>
                 <Typography>Arama</Typography>
                 <XInput 
@@ -148,13 +176,7 @@ function Filter({
             </Box>
             <Box>
                 <Typography>Fiyat Aralığı</Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
+                <StyledPricesBox>
                   <XInput 
                       type='number'
                       label=""
@@ -165,12 +187,9 @@ function Filter({
                       hasError={formik.errors.minPrice}
                       size="small"
                   />
-                  <Typography sx={{
-                      textAlign: 'center', 
-                      marginInline: '10px'
-                  }}>
+                  <StyledBetweenPricesTypography>
                       -
-                  </Typography>
+                  </StyledBetweenPricesTypography>
                   <XInput 
                       type='number'
                       label=""
@@ -181,7 +200,7 @@ function Filter({
                       handleChange={formik.handleChange}
                       size="small"
                   />
-                </Box>
+                </StyledPricesBox>
               
                 <Box
                     sx={{
@@ -195,12 +214,7 @@ function Filter({
                 </Box>
             </Box>
            
-            <Box
-              sx={{
-                display: 'contents',
-                gap: '1px'
-              }}
-            >
+            <StyledButtonBox>
               <XButton 
                 text='Ara' 
                 type="submit" 
@@ -216,43 +230,31 @@ function Filter({
                 onClick={() => handleResetForm()}
                 sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
               />
-            </Box>
+            </StyledButtonBox>
           
-          </Box>
+          </StyledMainFormBox>
         </form>
     )
 
     const lazyProductFilterForm = (
-        <Box 
-            sx={{ 
-                display: 'grid',
-                marginTop: '30px', 
-                gridGap: '30px',
-                marginInline: '30px'
-            }}
-        >
-       <Box sx={{ display: 'grid', gap: '5px' }}>
-            <Skeleton variant="rectangular" width={200} height={15} />
-            <Skeleton variant="rectangular" width={310} height={40} />
-        </Box>
-        <Box sx={{ display: 'grid', gap: '5px' }}>
-            <Skeleton variant="rectangular" width={200} height={15} />
-            <Skeleton variant="rectangular" width={310} height={40} />
-        </Box>
-        <Box sx={{ display: 'grid', gap: '5px' }}>
-            <Skeleton variant="rectangular" width={200} height={15} />
-            <Skeleton variant="rectangular" width={310} height={40} />
-        </Box>
-        <Box
-          sx={{
-            display: 'contents',
-            gap: '1px'
-          }}
-        >
-            <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
-            <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
-        </Box>
-      </Box>
+        <StyledMainFormBox>
+            <Box sx={{ display: 'grid', gap: '5px' }}>
+                <Skeleton variant="rectangular" width={200} height={15} />
+                <Skeleton variant="rectangular" width={310} height={40} />
+            </Box>
+            <Box sx={{ display: 'grid', gap: '5px' }}>
+                <Skeleton variant="rectangular" width={200} height={15} />
+                <Skeleton variant="rectangular" width={310} height={40} />
+            </Box>
+            <Box sx={{ display: 'grid', gap: '5px' }}>
+                <Skeleton variant="rectangular" width={200} height={15} />
+                <Skeleton variant="rectangular" width={310} height={40} />
+            </Box>
+            <StyledButtonBox>
+                <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
+                <Skeleton variant="rectangular" width={310} height={50} sx={{ float: 'right' }} />
+            </StyledButtonBox>
+      </StyledMainFormBox>
     )
     
     // Functions
@@ -302,12 +304,11 @@ function Filter({
                 {isLoading ? (
                       <Skeleton variant="rectangular" width={70} height={45} sx={{ float: 'right' }} />
                 ): (
-                    <XButton 
+                    <StyledDrawerOpenButton 
                         text={<FilterAltIcon  />}
                         variant="contained" 
                         buttonSize="large"
                         onClick={openMobileFilter}
-                        sx={{ color: '#17a77f', backgroundColor: '#ffffff' }}
                     />
                 )}
                 <Drawer
@@ -322,12 +323,12 @@ function Filter({
                     }}
                 >
                     <Box>
-                        <XButton 
-                        text={<CloseIcon />}
-                        variant="contained" 
-                        buttonSize="large"
-                        onClick={() => closeMobileFilter()}
-                        sx={{ color: '#17a77f', backgroundColor: '#ffffff', width: 'fit-content', float: 'right' }}
+                        <StyledDrawerCloseButton 
+                            text={<CloseIcon />}
+                            variant="contained" 
+                            buttonSize="large"
+                            onClick={() => closeMobileFilter()}
+                            sx={{ color: '#17a77f', backgroundColor: '#ffffff', width: 'fit-content', float: 'right' }}
                         />
                     </Box>
                     {productFilterForm}
