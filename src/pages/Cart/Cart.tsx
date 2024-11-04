@@ -40,7 +40,8 @@ const StyledCartBox = styled(Box)(({ theme }) => ({
 }));
 
 const StyledRightBox = styled(Box)(({ theme }) => ({
-    py:4,
+    paddingBottom:'40px',
+    paddingTop: '10px',
     gap: 4,
 }));
 
@@ -118,7 +119,7 @@ function Cart() {
                         <StyledCartBox>
                             <StyledSubTypography> {bagItems.length} ürün </StyledSubTypography>
                             <Typography>|</Typography>
-                            <StyledSubTypography> ${roundedTotalPrice}</StyledSubTypography>
+                            <StyledSubTypography> {roundedTotalPrice} TL</StyledSubTypography>
                         </StyledCartBox>
                         <ShopCard bagItems={bagItems} />
                     </Grid>
