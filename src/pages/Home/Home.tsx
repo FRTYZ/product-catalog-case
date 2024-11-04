@@ -187,7 +187,7 @@ function Home() {
             {/* Product card and lazy loading */}
             <Suspense fallback={<LazyCard amount={12} grid={[4,4,4,6]} />}>
                 {!isLoading ? (
-                  <ProductCard data={filteredProducts} grid={[4,4,4,6]} />
+                  <ProductCard data={filteredProducts} grid={[6,4,6,6]} />
                 ): (
                   <LazyCard amount={12} grid={[4,4,4,6]} />
                 )}
