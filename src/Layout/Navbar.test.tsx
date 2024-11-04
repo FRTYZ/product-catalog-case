@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+
+// React router dom
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux';
+
+// Redux
 import store from '../redux/store'; // Redux store'unuzun doğru yolu
+import { Provider } from 'react-redux';
+
+// Component or page
 import Navbar from './Navbar'; // Navbar bileşeninin doğru yolu
 
 describe('Navbar Component', () => {

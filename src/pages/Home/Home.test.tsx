@@ -1,11 +1,18 @@
 import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-import Home from './Home';
 
+// React router dom
+import { BrowserRouter as Router } from 'react-router-dom';
+
+// Redux
+import { Provider } from 'react-redux';
 import store from '../../redux/store';
+
+// React query
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+
+// Compoent and page
+import Home from './Home';
 
 const queryClient = new QueryClient();
 
