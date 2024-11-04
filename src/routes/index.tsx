@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 
 // Pages
-
 import Home from "../pages/Home/Home";
 import Cart from "../pages/Cart/Cart";
 
